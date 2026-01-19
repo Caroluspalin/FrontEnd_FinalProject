@@ -20,9 +20,9 @@ const CustomerList: React.FC = () => {
   useEffect(() => { fetchData(); }, []);
 
   const deleteCustomer = (url: string) => {
-    if (window.confirm("Are you sure you want to delete this customer?")) {
+    if (window.confirm("Are you sure?")) {
       fetch(url, { method: 'DELETE' }).then(() => {
-        setSnackbar({ open: true, msg: "Customer deleted successfully" });
+        setSnackbar({ open: true, msg: "Customer deleted" });
         fetchData();
       });
     }
@@ -41,17 +41,30 @@ const CustomerList: React.FC = () => {
         </Box>
       )
     },
+    
     { field: 'firstname', filter: true, sortable: true, flex: 1 },
     { field: 'lastname', filter: true, sortable: true, flex: 1 },
-    { field: 'email', flex: 1.5 },
-    { field: 'phone', flex: 1 },
-    { field: 'city', flex: 1 },
+    { field: 'email', filter: true, sortable: true, flex: 1.5 },
+    { field: 'phone', filter: true, sortable: true, flex: 1 },
+    { field: 'streetaddress', filter: true, sortable: true, flex: 1.2 },
+    { field: 'city', filter: true, sortable: true, flex: 1 },
   ]);
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Customers</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        {/* GLOW EFEKTI OTSIKOSSA */}
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            fontWeight: 'bold', 
+            color: '#fff',
+            textShadow: '0 0 15px rgba(99, 102, 241, 0.6), 0 0 30px rgba(99, 102, 241, 0.4)', // Violetti hehku
+            letterSpacing: '1px'
+          }}
+        >
+          Customers
+        </Typography>
         <AddCustomer saveCustomer={fetchData} />
       </Box>
       <div className="ag-theme-material" style={{ height: 600, width: '100%' }}>
