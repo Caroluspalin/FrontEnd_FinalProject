@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Button, Container, CssBaseline, Box } from
 import CustomerList from './components/CustomerList';
 import TrainingList from './components/TrainingList';
 
-function App() {
+const App: React.FC = () => {
   return (
     <BrowserRouter>
       <CssBaseline />

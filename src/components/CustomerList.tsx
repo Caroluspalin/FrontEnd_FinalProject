@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { Typography, Box } from '@mui/material';
+import { Customer } from '../types';
+import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-material.css';
 
-function CustomerList() {
-  const [customers, setCustomers] = useState([]);
+const CustomerList: React.FC = () => {
+  const [customers, setCustomers] = useState<Customer[]>([]);
 
   useEffect(() => {
     fetch('https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/customers')
@@ -14,7 +16,7 @@ function CustomerList() {
       .catch(err => console.error(err));
   }, []);
 
-  const [columnDefs] = useState([
+  const [columnDefs] = useState<ColDef<Customer>[]>([
     { field: 'firstname', filter: true, sortable: true, flex: 1 },
     { field: 'lastname', filter: true, sortable: true, flex: 1 },
     { field: 'streetaddress', filter: true, sortable: true, flex: 1.5 },
@@ -39,6 +41,6 @@ function CustomerList() {
       </div>
     </Box>
   );
-}
+};
 
 export default CustomerList;
