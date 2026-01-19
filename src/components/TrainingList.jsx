@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import dayjs from 'dayjs';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-material.css';
 
 function TrainingList() {
   const [trainings, setTrainings] = useState([]);
@@ -12,13 +14,11 @@ function TrainingList() {
 
   const fetchTrainings = async () => {
     try {
-      // 1. Haetaan kaikki treenit
       const response = await fetch('https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/trainings');
       const data = await response.json();
       const rawTrainings = data._embedded.trainings;
 
-      // 2. Haetaan asiakastiedot jokaiselle treenille (Grade 5 logiikka)
-      const trainingsWithCustomers = await Promise.all(
+      const enrichedTrainings = await Promise.all(
         rawTrainings.map(async (training) => {
           const customerRes = await fetch(training._links.customer.href);
           const customerData = await customerRes.json();
@@ -28,10 +28,9 @@ function TrainingList() {
           };
         })
       );
-
-      setTrainings(trainingsWithCustomers);
+      setTrainings(enrichedTrainings);
     } catch (err) {
-      console.error("Virhe tiedon haussa:", err);
+      console.error("Error fetching trainings:", err);
     }
   };
 
@@ -41,28 +40,34 @@ function TrainingList() {
       field: 'date', 
       filter: true, 
       sortable: true,
+      flex: 1.2,
       valueFormatter: params => dayjs(params.value).format('DD.MM.YYYY HH:mm')
     },
-    { field: 'duration', headerName: 'Duration (min)', filter: true, sortable: true },
-    { field: 'activity', filter: true, sortable: true },
+    { field: 'duration', headerName: 'Duration (min)', filter: true, sortable: true, flex: 1 },
+    { field: 'activity', filter: true, sortable: true, flex: 1.2 },
     { 
       headerName: 'Customer', 
-      field: 'customerName', // Käytetään uutta yhdistettyä kenttää
+      field: 'customerName', 
       filter: true, 
-      sortable: true 
+      sortable: true,
+      flex: 1.5
     },
   ]);
 
   return (
-    <div className="ag-theme-material" style={{ height: 600, width: '100%' }}>
-      <Typography variant="h4" sx={{ my: 2 }}>Trainings</Typography>
-      <AgGridReact 
-        rowData={trainings} 
-        columnDefs={columnDefs} 
-        pagination={true} 
-        paginationPageSize={10} 
-      />
-    </div>
+    <Box>
+      <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: '#fff' }}>Trainings</Typography>
+      <div className="ag-theme-material" style={{ height: 650, width: '100%' }}>
+        <AgGridReact 
+          rowData={trainings} 
+          columnDefs={columnDefs} 
+          pagination={true} 
+          paginationPageSize={50} 
+          paginationPageSizeSelector={[10, 20, 50, 100]}
+          autoSizeStrategy={{ type: 'fitGridWidth' }}
+        />
+      </div>
+    </Box>
   );
 }
 

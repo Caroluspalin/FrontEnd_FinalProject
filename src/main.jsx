@@ -1,9 +1,9 @@
-// src/main.jsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
+import './index.css'
 
-// LISÄÄ NÄMÄ RIVIT:
+
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 ModuleRegistry.registerModules([ AllCommunityModule ]);
 
